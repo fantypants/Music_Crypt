@@ -6,7 +6,7 @@ Music Crypt is built off the back bone of Elixium:
 https://github.com/ElixiumNetwork
 
 And our active telegram is:
-https://t.me/elixiumnetworkwith
+https://t.me/elixiumnetwork
 
 Our website:
 http://elixiumnetwork.org
