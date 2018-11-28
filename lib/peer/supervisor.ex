@@ -1,4 +1,4 @@
-defmodule Miner.PeerRouter.Supervisor do
+defmodule MusicCrypt.PeerRouter.Supervisor do
   use Supervisor
 
   def start_link(_args) do
@@ -6,7 +6,7 @@ defmodule Miner.PeerRouter.Supervisor do
   end
 
   def init(_args) do
-    children = [Miner.PeerRouter]
+    children = [MusicCrypt.PeerRouter]
 
     Supervisor.init(children, strategy: :one_for_one)
   end

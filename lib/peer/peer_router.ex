@@ -1,4 +1,4 @@
-defmodule Miner.PeerRouter do
+defmodule MusicCrypt.PeerRouter do
   use GenServer
   require Logger
   require IEx
@@ -16,8 +16,6 @@ defmodule Miner.PeerRouter do
   end
 
   def init(_args) do
-    BlockCalculator.start_mining()
-
     {:ok, []}
   end
 
@@ -42,9 +40,6 @@ defmodule Miner.PeerRouter do
         Logger.info("Received valid block (#{block.hash}) at index #{:binary.decode_unsigned(block.index)}.")
         Peer.gossip("BLOCK", block)
         Logger.info("Gossipped block #{block.hash} to peers.")
-
-        # Restart the miner to build upon this newly received block
-        BlockCalculator.restart_mining()
 
       :gossip ->
         # For one reason or another, we want to gossip this block without
@@ -120,8 +115,7 @@ defmodule Miner.PeerRouter do
         block = Block.sanitize(block)
 
         if LedgerManager.handle_new_block(block) == :ok do
-          # Restart the miner to build upon this newly received block
-          BlockCalculator.restart_mining()
+
         end
       end)
     end
@@ -132,10 +126,7 @@ defmodule Miner.PeerRouter do
   def handle_info({transaction = %{type: "TRANSACTION"}, _caller}, state) do
     transaction = Transaction.sanitize(transaction)
 
-    IO.inspect(transaction.id, label: "New transaction")
-
     if Validator.valid_transaction?(transaction) do
-      BlockCalculator.add_tx_to_pool(transaction)
     else
       Logger.info("Received Invalid Transaction. Ignoring.")
     end
